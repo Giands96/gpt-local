@@ -15,7 +15,7 @@
 
 
         main{
-            width: 600px;
+            width: 400px;
             max-width: 100%;
             height: 50vh;
 
@@ -24,6 +24,7 @@
             border-radius: 8px;
             margin-bottom: 16px;
             overflow-y: auto;
+            scroll-behavior: smooth;
         }
 
         ul{
@@ -60,7 +61,8 @@
 
         &.user{
             align-self: flex-end;
-            align-items: flex-end;        }
+            align-items: flex-end;        
+        }
             span, p{
                 background: rgb(186, 233, 252);
                 
@@ -95,11 +97,30 @@
                 border-radius: 0.5rem;
                 transition: background 0.3s ease;
                 
+                &[disabled]{
+                    background: #ccc;
+                    opacity: .6;
+                    pointer-events: none;
+
+                }
+
                 &:hover{
                     background: rgb(0,104,173);
                 }
                 
             }
+
+            
+        }
+
+        small{
+            font-size: 10px;
+            color: #555;
+            position: fixed;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            margin: auto;
         }
 
         
@@ -107,27 +128,82 @@
     </style>
     
     <script type="module">
-        const $ = el => document.querySelector(el)
-        //El simbolo $ remplazará la propiedad "document.querySelector tal como un método"
+        import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm"
 
+       
+
+        const $ = el => document.querySelector(el)
+
+        //El simbolo $ remplazará la propiedad "document.querySelector tal como un método"
         const $form = $('form');
         const $input = $('input');
         const $template = $('#message-template');
         const $messages = $('ul');
         const $container = $('main');
         const $button = $('button');
+        const $info = $('small')
+        const SELECTED_MODEL = 'Llama-3-8B-Instruct-q4f32_1-MLC-1k';
+        
+        let messages = [];
 
-        $form.addEventListener('submit', (e) =>{
+        const engine = await CreateMLCEngine(
+            SELECTED_MODEL,
+            {
+                initProgressCallBack: (info) => {
+                    console.log('initProgressCallBack', info)
+                    $info.textContent = `${info}%`
+                    if(info.progress === 1){
+                        $button.removeAttribute('disabled')
+                    }
+                }
+            }
+        )
+
+        $form.addEventListener('submit', async (e) =>{
             e.preventDefault();
             const messageText = $input.value.trim()
             if(messageText !== ''){
                 //Añade mensaje en el DOM
                 $input.value = '';
-
+                addMessage(messageText,'user');
+            $button.setAttribute('disabled','');
             }
 
-            addMessage(messageText,'user');
-        })
+
+            const userMessage = {
+                role: 'user',
+                content: messageText
+            }
+
+            messages.push(userMessage)
+
+            const chunks = await engine.chat.completions.create({
+                messages,
+                 stream:true
+            });
+
+
+            let reply = ""
+
+            const $botMessage = addMessage("", 'bot');
+
+
+            for await (const chunk of chunks ){
+                const [choice] = chunk.choices
+                const content = choice?.delta?.content ?? ""
+                reply += content;
+                $botMessage.textContent = reply
+                
+            }
+
+            $button.removeAttribute('disabled') 
+            messages.push({
+                role: 'assistant',
+                content: reply
+            })
+                   
+            
+        });
 
         function addMessage(text, sender){
             //Clonar el Template
@@ -146,7 +222,7 @@
             $messages.appendChild($newMessage);
             $container.scrollTop = $container.scrollHeight;
             
-
+            return $text;
         }
 
        
@@ -154,20 +230,9 @@
 </head>
 <body>
     <main>
-        <ul>
-            <li class="message bot">
-                <span>GPT</span>
-                <p>Esta es la respuesta del bot</p>
-            </li>
-            <li class="message user">    
-                <span>Tú</span>
-                <p>Esta es la respuesta del usuario</p>    
-            </li>
-            <li class="message user">    
-                <span>Tú</span>
-                <p>Esta es la respuesta del usuario y es una respuesta muy larga para ver que no se rompe nada</p>   
-            </li>
-        </ul>
+       <ul>
+
+       </ul>
     </main>
 
     <form action="">
@@ -175,12 +240,14 @@
         <button >Enviar</button>
     </form>
 
+
+    <small>&nbsp;</small>
+
     <template id="message-template">
         <li class="message">    
             <span></span>
             <p></p>
         </li>
     </template>
-    <script src="script.js"></script>
 </body>
 </html>
