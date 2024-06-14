@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaGPT 100% Private</title>
+    <style>
+        body {
+            font-family: system-ui;
+            background-color: #f0f0f0;
+            display: grid;
+            place-content: center;
+            height: 100dvh; /* dvh y vh */
+        }
+
+
+        main{
+            width: 600px;
+            max-width: 100%;
+            height: 50vh;
+
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow-y: auto;
+        }
+
+        ul{
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            padding: 0;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin: 4px 0px;
+            padding: 4px 8px;
+
+            > span{
+                width: 36px;
+                height: 36px;
+                font-size: 12px;
+                font-weight: 500;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 99999px;
+
+        }
+
+        > p{
+            padding: 4px 8px;
+            margin-top: 4px;
+            border-radius: 0.5rem;
+        }
+
+        &.user{
+            align-self: flex-end;
+            align-items: flex-end;        }
+            span, p{
+                background: rgb(186, 233, 252);
+                
+            }
+        
+        &.bot{
+            align-self: flex-start;
+            span, p{
+                background: rgb(198,255,220);
+            }
+        }
+
+        }
+
+        form{
+            display: flex;
+            input{
+                border: 0;
+                font-size: 16px;
+                padding: 8px;
+                flex-grow: 1;
+                margin-right: 8px;
+                border-radius: 10rem;
+                border: 1px solid #ccc
+            }
+            button{
+                border: 0;
+                background: #09f;
+                font-size: 16px;
+                cursor: pointer;
+                color: #ffffff;
+                border-radius: 0.5rem;
+                transition: background 0.3s ease;
+                
+                &:hover{
+                    background: rgb(0,104,173);
+                }
+                
+            }
+        }
+
+        
+
+    </style>
+    
+    <script type="module">
+        const $ = el => document.querySelector(el)
+        //El simbolo $ remplazará la propiedad "document.querySelector tal como un método"
+
+        const $form = $('form');
+        const $input = $('input');
+        const $template = $('#message-template');
+        const $messages = $('ul');
+        const $container = $('main');
+        const $button = $('button');
+
+        $form.addEventListener('submit', (e) =>{
+            e.preventDefault();
+            const messageText = $input.value.trim()
+            if(messageText !== ''){
+                //Añade mensaje en el DOM
+                $input.value = '';
+
+            }
+
+            addMessage(messageText,'user');
+        })
+
+        function addMessage(text, sender){
+            //Clonar el Template
+            const clonedTemplate = $template.content.cloneNode(true);
+            const $newMessage = clonedTemplate.querySelector('.message');
+            const $text = $newMessage.querySelector('p');
+            const $who = $newMessage.querySelector('span');
+            
+
+            $text.textContent = text;
+            $who.textContent = sender === 'bot' ? 'GPT' : 'Tú'; 
+            $newMessage.classList.add(sender)
+            
+            //Actualización del Scroll
+
+            $messages.appendChild($newMessage);
+            $container.scrollTop = $container.scrollHeight;
+            
+
+        }
+
+       
+    </script>
+</head>
+<body>
+    <main>
+        <ul>
+            <li class="message bot">
+                <span>GPT</span>
+                <p>Esta es la respuesta del bot</p>
+            </li>
+            <li class="message user">    
+                <span>Tú</span>
+                <p>Esta es la respuesta del usuario</p>    
+            </li>
+            <li class="message user">    
+                <span>Tú</span>
+                <p>Esta es la respuesta del usuario y es una respuesta muy larga para ver que no se rompe nada</p>   
+            </li>
+        </ul>
+    </main>
+
+    <form action="">
+        <input placeholder="Escribe tu mensaje ...">
+        <button >Enviar</button>
+    </form>
+
+    <template id="message-template">
+        <li class="message">    
+            <span></span>
+            <p></p>
+        </li>
+    </template>
+    <script src="script.js"></script>
+</body>
+</html>
