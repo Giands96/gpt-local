@@ -1,6 +1,6 @@
-# GPT-Local en el Navegador con Llama-3
+# GPT-Local en el Navegador con Llama-3 
 
-Bienvenido a **GPT-Local** , una implementación de la IA **Llama-3** que se ejecuta localmente en tu navegador. Este proyecto está diseñado para proporcionar una experiencia de inteligencia artificial potente sin la necesidad de depender de servidores externos. **Ten en cuenta que la IA necesita descargar 5GB de datos para funcionar correctamente**, por lo que al inicio siempre tardará alrededor de 30 minutos en estar lista.
+Bienvenido a este **GPT-Local** 👋, una implementación de la IA **Llama-3** que se ejecuta localmente en tu navegador. Este proyecto está diseñado para proporcionar una experiencia de inteligencia artificial potente sin la necesidad de depender de servidores externos. **Ten en cuenta que la IA necesita descargar 5GB de datos para funcionar correctamente**, por lo que al inicio siempre tardará alrededor de 30 minutos en estar lista.
 
 ## Características
 
@@ -60,10 +60,6 @@ Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENS
 
 - A la comunidad de código abierto por sus herramientas y recursos.
 - A los desarrolladores de Llama-3 por su increíble trabajo en inteligencia artificial.
-
----
-
-Esperamos que disfrutes usando GPT-Local en tu navegador. Si tienes alguna pregunta o necesitas ayuda, no dudes en abrir un issue en el repositorio.
 
 ---
 
