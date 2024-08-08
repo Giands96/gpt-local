@@ -52,9 +52,6 @@ Las contribuciones son bienvenidas. Si deseas contribuir:
 5. **Push a la Rama** (`git push origin feature/nueva-funcionalidad`).
 6. **Abre un Pull Request**.
 
-## Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
 ## Agradecimientos
 
